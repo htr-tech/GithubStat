@@ -6,7 +6,7 @@ with open("README.md", "r") as markdown:
 
 setup(
     name = "GithubStat",
-    version = "1.0",
+    version = "1.1",
     license = "MIT",
     author = "HTR-TECH",
     author_email = "tahmidrayat@gmail.com",
@@ -26,6 +26,8 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
     ],
     packages = find_packages(),
     zip_safe = True,

@@ -38,7 +38,7 @@ $ python setup.py install
 $ GithubStat <github-username>
 ```
 
-***Copyright (c) 2021 Tahmid Rayat Under [MIT LICENSE](https://github.com/htr-tech/GithubStat/blob/master/LICENSE#L1)***
+***Copyright (c) 2022 Tahmid Rayat Under [MIT LICENSE](https://github.com/htr-tech/GithubStat/blob/master/LICENSE#L1)***
 
 ### *📡 Get in Touch :*
 [![Github](https://img.shields.io/badge/Github-525252?style=for-the-badge&logo=github)](https://github.com/htr-tech)
