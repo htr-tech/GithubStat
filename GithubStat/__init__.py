@@ -29,6 +29,7 @@
 import os
 import sys
 import json
+import csv
 import six
 import requests
 
@@ -57,19 +58,19 @@ info = """
 """
 
 def status(user):
-    main = requests.get("https://api.github.com/users/%s" % (user))
+    main = requests.get(f"https://api.github.com/users/{user}")
     if main.status_code == 200:
         pass
     elif main.status_code == 404:
         print('No Github Account with that Username !')
         sys.exit()
     else:
-        print('Try again After Some Time')
+        print('Github api issue. Try again After Some Time')
         sys.exit()
 
 def stats(user):
     status(user)
-    main = requests.get("https://api.github.com/users/%s" % (user))
+    main = requests.get(f"https://api.github.com/users/{user}")
     dump = json.loads(main.text)
 
     h1 = dump['login']
@@ -91,30 +92,39 @@ def stats(user):
     print(info % (h1, h2, h3, h4, h5, h6, h7, h8,
           h9, h10, h11, h12, h13, h14, h1, h1, h15))
 
-    orgs = requests.get("https://api.github.com/users/%s/orgs" % (user))
+    orgs = requests.get(f"https://api.github.com/users/{user}/orgs")
     orgs_dump = json.loads(orgs.text)
     for hulu in orgs_dump:
         print('[-] Organization : {} '.format(hulu['login']))
 
-    list_repo = six.moves.input(
-        '\n[-] Wanna List repositories [Max 100] [Y/n] : ')
+    stats=[]
+    total_star, total_fork = 0, 0
+
+    if h11 > 100: page_c = (h11 // 100) + 1
+    else: page_c = 1
+
+    for i in range(page_c):
+        repos = requests.get(f"https://api.github.com/users/{user}/repos?page={i+1}&per_page=100")
+        repo_dump = json.loads(repos.text)
+        for x in repo_dump:
+            stats.append((x['name'],x['stargazers_count'],x['forks_count'],x['clone_url']))
+            total_star += int(x['stargazers_count'])
+            total_fork += int(x['forks_count'])
+
+    print('')
+    print('[-] Total Stars  : '+str(total_star))
+    print('[-] Total Forks  : '+str(total_fork))
     print('')
 
-    if list_repo == "y" or list_repo == "Y":
-        repos = requests.get(
-            "https://api.github.com/users/%s/repos?per_page=100" % (user))
-        repo_dump = json.loads(repos.text)
-        for bagh in repo_dump:
-            print('[-] Repo Name :: {} \n[-] Stars     :: {} \n[-] Forks     :: {} \n[-] Clone URL :: {}\n'.format(
-                bagh['name'], bagh['stargazers_count'], bagh['forks_count'], bagh['clone_url']))
+    save_repo = six.moves.input('[-] Save Repository List as .csv ? [Y/n] : ')
+    print('')
 
-        total_star, total_fork = 0, 0
-        for bagh in repo_dump:
-            total_star += int(bagh['stargazers_count'])
-            total_fork += int(bagh['forks_count'])
-
-        print('[-] Total Stars  : '+str(total_star))
-        print('[-] Total Forks  : '+str(total_fork))
+    if save_repo == "y" or save_repo == "Y":
+        with open(f'{user}.csv','w', newline='', encoding='utf-8') as f:
+            output=csv.writer(f)
+            output.writerow(['Repository Name','Total Stars','Total Forks','Clone URL'])
+            for w in stats: output.writerow(w)
+        print(f'[-] File Saved as : {user}.csv')
         print('')
     else:
         pass
