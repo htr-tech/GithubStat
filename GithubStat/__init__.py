@@ -54,7 +54,7 @@ info = """
 
 [-] Github URL   : https://github.com/%s
 [-] Repositories : https://github.com/%s/repositories
-[-] Avaar       : %s
+[-] Avatar       : %s
 """
 
 def status(user):
@@ -120,10 +120,12 @@ def stats(user):
     print('')
 
     if save_repo == "y" or save_repo == "Y":
-        with open('%s.csv' % (user),'w', newline='', encoding='utf-8') as f:
-            output=csv.writer(f)
+        with open("%s.csv" % (user), "w") as f:
+            output=csv.writer(f, lineterminator='\n')
             output.writerow(['Repository Name','Total Stars','Total Forks','Clone URL'])
-            for w in stats: output.writerow(w)
+            for row in stats:
+                output.writerow(row)
+
         print("[-] File Saved as : %s.csv" % (user))
         print('')
     else:
