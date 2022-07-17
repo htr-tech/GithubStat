@@ -58,7 +58,7 @@ info = """
 """
 
 def status(user):
-    main = requests.get(f"https://api.github.com/users/{user}")
+    main = requests.get("https://api.github.com/users/%s" % (user))
     if main.status_code == 200:
         pass
     elif main.status_code == 404:
@@ -70,7 +70,7 @@ def status(user):
 
 def stats(user):
     status(user)
-    main = requests.get(f"https://api.github.com/users/{user}")
+    main = requests.get("https://api.github.com/users/%s" % (user))
     dump = json.loads(main.text)
 
     h1 = dump['login']
@@ -92,7 +92,7 @@ def stats(user):
     print(info % (h1, h2, h3, h4, h5, h6, h7, h8,
           h9, h10, h11, h12, h13, h14, h1, h1, h15))
 
-    orgs = requests.get(f"https://api.github.com/users/{user}/orgs")
+    orgs = requests.get("https://api.github.com/users/%s/orgs" % (user))
     orgs_dump = json.loads(orgs.text)
     for hulu in orgs_dump:
         print('[-] Organization : {} '.format(hulu['login']))
@@ -104,7 +104,7 @@ def stats(user):
     else: page_c = 1
 
     for i in range(page_c):
-        repos = requests.get(f"https://api.github.com/users/{user}/repos?page={i+1}&per_page=100")
+        repos = requests.get("https://api.github.com/users/%s/repos?page=%s&per_page=100" % (user,i+1))
         repo_dump = json.loads(repos.text)
         for x in repo_dump:
             stats.append((x['name'],x['stargazers_count'],x['forks_count'],x['clone_url']))
@@ -120,11 +120,13 @@ def stats(user):
     print('')
 
     if save_repo == "y" or save_repo == "Y":
-        with open(f'{user}.csv','w', newline='', encoding='utf-8') as f:
-            output=csv.writer(f)
+        with open("%s.csv" % (user), "w") as f:
+            output=csv.writer(f, lineterminator='\n')
             output.writerow(['Repository Name','Total Stars','Total Forks','Clone URL'])
-            for w in stats: output.writerow(w)
-        print(f'[-] File Saved as : {user}.csv')
+            for row in stats:
+                output.writerow(row)
+
+        print("[-] File Saved as : %s.csv" % (user))
         print('')
     else:
         pass
