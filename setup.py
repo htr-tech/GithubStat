@@ -6,7 +6,7 @@ with open("README.md", "r") as markdown:
 
 setup(
     name = "GithubStat",
-    version = "1.1",
+    version = "1.2",
     license = "MIT",
     author = "HTR-TECH",
     author_email = "tahmidrayat@gmail.com",
